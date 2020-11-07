@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from store.models import Product
 
 def front_page(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(is_featured=True)
     context = {
         'products': products
     }

@@ -22,6 +22,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     price = models.IntegerField()
     added_date = models.DateTimeField(auto_now_add=True)
+    is_featured = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'products'
