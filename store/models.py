@@ -21,11 +21,13 @@ class Product(models.Model):
     slug = models.SlugField(max_length=255)
     description = models.TextField(blank=True, null=True)
     price = models.IntegerField()
+    added_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = 'products'
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+        ordering = ('-added_date',)
 
     def __str__(self):
         return self.title
