@@ -6,8 +6,8 @@ RUN mkdir ./commercial_store
 
 WORKDIR /commercial_store
 
-ADD . /commercial_store
-
-ADD . /commercial_store/
+COPY requirements.txt /commercial_store/
 
 RUN pip install -r requirements.txt
+
+COPY . /commercial_store/
