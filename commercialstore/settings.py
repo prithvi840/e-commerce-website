@@ -31,6 +31,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Cart
+
+CART_SESSION_ID = 'cart'
 
 # Application definition
 

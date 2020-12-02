@@ -30,5 +30,7 @@ class Product(models.Model):
         verbose_name_plural = 'Products'
         ordering = ('-added_date',)
 
+    objects = models.Manager
+
     def __str__(self):
         return self.title

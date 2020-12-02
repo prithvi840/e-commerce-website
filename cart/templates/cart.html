@@ -5,5 +5,102 @@
 {% endblock title %}
 
 {% block content %}
-  <h1 class="title">Cart</h1>
+
+  <div id="cartapp" class="container">
+
+    <h1 class="title">Cart</h1>
+    {% if cart %}
+      <div class="table">
+        <table class="table">
+          <thead>
+            <th>Product</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th></th>
+          </thead>
+
+          <tbody>
+            <tr v-for="product in products">
+              <td>[[ product.product ]]</td>
+              <td>[[ product.price ]]</td>
+              <td>[[ product.quantity ]]
+                <button @click="incrementQuantity(product.id, product.quantity)">+</button>
+              </td>
+              <td>[[ product.total_price ]]</td>
+              <td>
+                <button @click='removeFromCart(product.id)' class="button is-danger is-small is-outlined">Remove From Cart</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>Cart is empty!!!</p>
+    {% endif %}
+  </div>
 {% endblock content %}
+
+
+{% block scripts %}
+  <script>
+    const app = new Vue({
+      el: '#cartapp',
+      delimiters: ['[[', ']]'],
+      store: store,
+      data: {
+        products: {{ productstring|safe }}
+      },
+
+      methods: {
+        removeFromCart (product_id) {
+          const data = {'id': product_id};
+
+          fetch('/api/remove_from_cart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            const product = this.products.find(product => product.id === product_id);
+            this.products = this.products.filter(product => product.id !== product_id);
+            store.commit('decrement', product.quantity);
+          })
+          .catch(err => {
+            console.log(err);
+            throw err;
+          });
+        },
+
+        incrementQuantity (product_id, quantity) {
+          const data = { 'product_id': product_id, 'quantity': quantity+1 };
+
+          fetch('/api/add_to_cart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            product = this.products.find(product => product.id === product_id);
+            product.quantity = quantity + 1;
+            product.total_price = product.quantity * product.price
+
+            store.commit('increment', 1);
+          })
+          .catch(err => {
+            console.log(err);
+            throw err;
+          });
+        }
+      }
+    });
+  </script>
+{% endblock scripts %}

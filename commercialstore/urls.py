@@ -16,10 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from cart.apis import api_add_to_cart, api_remove_from_cart
 
 urlpatterns = [
     path('', include('core.urls')),
     path('admin/', admin.site.urls),
     path('/', include('store.urls')),
-    path('cart/', include('cart.urls'))
+    path('cart/', include('cart.urls')),
+    path('api/add_to_cart', api_add_to_cart, name='add_to_cart'),
+    path('api/remove_from_cart', api_remove_from_cart, name='remove_from_cart')
 ]
